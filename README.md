@@ -13,7 +13,7 @@ pipenv install tabulate pyfiglet crowdstrike-falconpy
 **Set API Keys as Environment Variables**
 ```
 echo "export FALCON_CLIENT_ID=acaesfaskcuessneaseiru >> ~/.zshrc"
-echo "export FALCON_SECRET_ID=acakelsarusaicanseiaac >> ~/.zshrc"
+echo "export FALCON_CLIENT_SECRET=acakelsarusaicanseiaac >> ~/.zshrc"
 source ~/.zshrc
 ```
 
