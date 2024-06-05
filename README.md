@@ -19,3 +19,4 @@ source ~/.zshrc
 
 ## Examples
 
+![frozen-spider](res/frozen-spider.png)
