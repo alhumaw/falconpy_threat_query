@@ -104,10 +104,6 @@ def begin_query(falcon):
 if __name__ == "__main__":
     falcon = api_init()
     begin_query(falcon)
-    
-
-    #print_actor_info(intel)
-
 
 
 
