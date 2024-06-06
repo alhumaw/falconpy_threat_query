@@ -4,9 +4,9 @@ import json
 import pyfiglet
 from tabulate import tabulate
 
-CLIENT_ID = os.environ["FALCON_CLIENT_ID"]
-CLIENT_SECRET = os.environ["FALCON_CLIENT_SECRET"]
 
+
+"""Actor generation class"""
 class Actor:
     
     def __init__(self, handler, queried_value):
@@ -17,18 +17,21 @@ class Actor:
         self.threats = ''
         self.name = ''
         self.url = ''
+        self.desc = ''
 
             
     '''Returns a dictionary of actor info'''
     def get_basic_info(self):
         name = self.queried_value.replace(" ","-").lower()
-        intel = self.handler.command(action="QueryIntelActorEntities",q=name, limit=1)['body']['resources']
+        intel = self.handler.command(action="QueryIntelActorEntities",q=name)['body']['resources']
         return intel
-
+    
+    '''Returns a dictionary of threat info'''
     def get_threat_info(self, threat):
         intel = self.handler.command(action="GetMitreReport",actor_id=self.threat_id, format="json")
         return intel
 
+    '''Setters'''
     def set_threat_id(self, threat_id):
         self.threat_id = threat_id
     
@@ -44,15 +47,43 @@ class Actor:
     def set_mitre(self, mitre):
         self.mitre = mitre
 
+    def set_desc(self, desc):
+        self.desc = desc
+
+"""Depending on keys found, formats data onto console"""
 def print_actor_info(actor):
     seperator = "="*90
     name = pyfiglet.figlet_format(actor.name,justify="center")
-    profile = [["THREATS RELATED", actor.threats], ["IDENTIFIER", actor.threat_id],["URL",actor.url]]
-    print(f"{seperator}\n{name}\n{tabulate(profile, tablefmt="heavy_grid")}")
-    mitre_connections = '\n'.join(actor.mitre)
-    mitre = [["MITRE CONNECTIONS"],[mitre_connections]]
-    print(f"{tabulate(mitre, tablefmt='heavy_grid', headers="firstrow")}\n{seperator}")
+    if len(actor.mitre) > 1:
+        profile = [["THREATS RELATED", actor.threats], ["IDENTIFIER", actor.threat_id],["URL",actor.url]]
+        print(f"{seperator}\n{name}\n{tabulate(profile, tablefmt="heavy_grid")}")
+        mitre_connections = '\n'.join(actor.mitre)
+        mitre = [["MITRE CONNECTIONS"],[mitre_connections]]
+        print(f"{tabulate(mitre, tablefmt='heavy_grid', headers="firstrow")}\n{seperator}")
+    else:
+        profile = [["IDENTIFIER", actor.threat_id],["URL",actor.url]]
+        print(f"{seperator}\n{name}\n{tabulate(profile, tablefmt="heavy_grid")}")
+        print(actor.desc.center(65))
+        print(f"\n{seperator}")
 
+def chunk_long_description(desc: str, col_width: int = 80) -> str:
+    """Chunk a long string by delimiting with CR based upon column length."""
+    desc_chunks = []
+    chunk = ""
+    for word in desc.split():
+        new_chunk = f"{chunk}{word.strip()} "
+        if len(new_chunk) >= col_width:
+            desc_chunks.append(new_chunk)
+            chunk = ""
+        else:
+            chunk = new_chunk
+
+    delim = "\n"
+    desc_chunks.append(chunk)
+
+    return delim.join(desc_chunks)
+
+"""Parses dictionary of intel, setting Actor class values"""
 def generate_actor_profile(query):
     actor = Actor(falcon,query)
     intel = actor.get_basic_info()
@@ -64,24 +95,33 @@ def generate_actor_profile(query):
         threat_dict = character_list['develops_threats'][0]
         actor.set_threats(threat_dict['family_name'])
     except KeyError:
-        threat_dict = character_list["uses_threats"][0]
-        actor.set_threats(threat_dict['family_name'])
+        if  "uses_threats" not in character_list:
+            actor.set_threats(" ")
+            short_desc = character_list["short_description"]
+            short_desc = chunk_long_description(short_desc)
+            actor.set_desc(short_desc.split(".")[0] + ".")
+        else:
+            threat_dict = character_list["uses_threats"][0]  
+            actor.set_threats(threat_dict['family_name'])
     return actor
 
-
-""" Return API Handler Object """
+"""Return API Handler Object"""
 def api_init():
+    CLIENT_ID = os.environ["FALCON_CLIENT_ID"]
+    CLIENT_SECRET = os.environ["FALCON_CLIENT_SECRET"]
     falcon = APIHarnessV2(client_id=CLIENT_ID, client_secret=CLIENT_SECRET)
     return falcon
 
+"""Finds keys in nested dictionaries"""
 def iterate_lod(resources, key_search):
-    actors = []
+    found_values = []
     for parent in resources:
         for key in parent:
             if key == key_search:
-                actors.append(parent[key])
-    return actors
+                found_values.append(parent[key])
+    return found_values
 
+"""Returns list of actor names"""
 def query_intel_actor_entities(query, falcon):
     query = query.replace(" ","-").lower()
     try:
@@ -91,22 +131,44 @@ def query_intel_actor_entities(query, falcon):
     except IndexError:
         print("Filter Error")
 
+"""Setting MITRE connections to Actor, if there are any"""
 def generate_threat_info(actor):
     intel = actor.get_threat_info(actor.threats)
     intel=intel.decode('utf-8')
     intel_list = json.loads(intel)
-    mitre = iterate_lod(intel_list,key_search="tactic_name")
-    actor.set_mitre(set(mitre))
+    if intel_list == None:
+        print('Loading...')
+    else:
+        mitre = iterate_lod(intel_list,key_search="tactic_name")
+        actor.set_mitre(set(mitre))
 
+"""Finds the actor specified in user input, returns a single actor"""
 def find_relevance(filter,falcon):
     actors = query_intel_actor_entities(filter,falcon)
+    while len(actors) < 1:
+        filter = input("Actor not found in query, please try again: ")
+        actors = query_intel_actor_entities(filter,falcon)
+        print(len(actors))    
+    
     print(f"\nFound {len(actors)} values related to {filter}\n")
-    if len(actors) > 1:
+    
+    while len(actors) > 1:
         print(actors)
-        exact_actor = input("Please choose from the follow actors\n")
-        return exact_actor
-    return filter
+        try:
+            exact_actor = input("Please choose from the follow actors\n")
+            if exact_actor.upper() not in actors:
+                raise ValueError("Invalid Actor Selected")
+            actors = query_intel_actor_entities(exact_actor, falcon)
+        except ValueError:
+            print("Error")
+        else:
+            return exact_actor
+    if len(actors) == 1:
+        return actors[0]
+    else:
+        return filter
 
+"""MAIN"""
 def begin_query(falcon):
     query= input("Which threat actor would you like to query? ")
     query = find_relevance(query,falcon)
@@ -116,6 +178,7 @@ def begin_query(falcon):
     generate_threat_info(actor)
     #send to print method
     print_actor_info(actor)
+
 
 if __name__ == "__main__":
     falcon = api_init()
