@@ -1,0 +1,220 @@
+Which threat actor would you like to query? 
+Found 1 values related to frozen spider
+
+[
+  {
+    "id": "ta0001_t1078",
+    "tactic_id": "ta0001",
+    "tactic_name": "Initial Access",
+    "technique_id": "t1078",
+    "technique_name": "Valid Accounts",
+    "reports": [
+      "CSID-24014",
+      "CSIR-23014",
+      "CSIT-23236"
+    ],
+    "observables": [
+      "Access brokers on the FROZEN SPIDER team use compromised valid accounts to facilitate initial access. DA-level accounts are the most sought after"
+    ]
+  },
+  {
+    "id": "ta0001_t1190",
+    "tactic_id": "ta0001",
+    "tactic_name": "Initial Access",
+    "technique_id": "t1190",
+    "technique_name": "Exploit Public-Facing Application",
+    "reports": [
+      "CSID-24014",
+      "CSIR-23014",
+      "CSIT-23236",
+      "CSIT-23253"
+    ],
+    "observables": [
+      "Member \"atari\" has actively targeted OWA accounts using the ProxyNotShell exploit"
+    ]
+  },
+  {
+    "id": "ta0001_t1566",
+    "tactic_id": "ta0001",
+    "tactic_name": "Initial Access",
+    "technique_id": "t1566",
+    "technique_name": "Phishing",
+    "reports": [
+      "CSIR-23014"
+    ],
+    "observables": [
+      "\"Boss\" provides members with access to a spam distribution service"
+    ]
+  },
+  {
+    "id": "ta0003_t1547",
+    "tactic_id": "ta0003",
+    "tactic_name": "Persistence",
+    "technique_id": "t1547",
+    "technique_name": "Boot or Logon Autostart Execution",
+    "reports": [
+      "CSECR-24053"
+    ]
+  },
+  {
+    "id": "ta0003_t1547.001",
+    "tactic_id": "ta0003",
+    "tactic_name": "Persistence",
+    "technique_id": "t1547.001",
+    "technique_name": "Registry Run Keys / Startup Folder",
+    "reports": [
+      "CSECR-24053"
+    ],
+    "observables": [
+      "Member \"raya\" attempts to ensure persistence by setting Registry keys and running a service which launches upon reboot"
+    ]
+  },
+  {
+    "id": "ta0005_t1130",
+    "tactic_id": "ta0005",
+    "tactic_name": "Defense Evasion",
+    "technique_id": "t1130",
+    "technique_name": "Install Root Certificate"
+  },
+  {
+    "id": "ta0010_t1567",
+    "tactic_id": "ta0010",
+    "tactic_name": "Exfiltration",
+    "technique_id": "t1567",
+    "technique_name": "Exfiltration Over Web Service",
+    "reports": [
+      "CSECR-24053"
+    ]
+  },
+  {
+    "id": "ta0010_t1567.002",
+    "tactic_id": "ta0010",
+    "tactic_name": "Exfiltration",
+    "technique_id": "t1567.002",
+    "technique_name": "Exfiltration to Cloud Storage",
+    "reports": [
+      "CSECR-24053"
+    ],
+    "observables": [
+      "FROZEN SPIDER uses Rclone to exfiltrate data to cloud storage services, including MEGA"
+    ]
+  },
+  {
+    "id": "ta0040_t1486",
+    "tactic_id": "ta0040",
+    "tactic_name": "Impact",
+    "technique_id": "t1486",
+    "technique_name": "Data Encrypted for Impact",
+    "reports": [
+      "CSA-231445"
+    ],
+    "observables": [
+      "FROZEN SPIDER encrypts victims’ networks and data"
+    ]
+  },
+  {
+    "id": "ta0042_t1583",
+    "tactic_id": "ta0042",
+    "tactic_name": "Resource Development",
+    "technique_id": "t1583",
+    "technique_name": "Acquire Infrastructure",
+    "reports": [
+      "CSIR-23014",
+      "CSIT-23236"
+    ],
+    "observables": [
+      "The member \"Boss\" provides access to servers for use during operations"
+    ]
+  },
+  {
+    "id": "ta0042_t1583.004",
+    "tactic_id": "ta0042",
+    "tactic_name": "Resource Development",
+    "technique_id": "t1583.004",
+    "technique_name": "Server"
+  },
+  {
+    "id": "ta0042_t1588",
+    "tactic_id": "ta0042",
+    "tactic_name": "Resource Development",
+    "technique_id": "t1588",
+    "technique_name": "Obtain Capabilities",
+    "reports": [
+      "CSIR-23014",
+      "CSIT-23236"
+    ]
+  },
+  {
+    "id": "ta0042_t1588.002",
+    "tactic_id": "ta0042",
+    "tactic_name": "Resource Development",
+    "technique_id": "t1588.002",
+    "technique_name": "Tool",
+    "reports": [
+      "CSIR-23014"
+    ],
+    "observables": [
+      "Members of FROZEN SPIDER are known to use open-source tools, including Rclone and RMM software"
+    ]
+  },
+  {
+    "id": "ta0042_t1588.005",
+    "tactic_id": "ta0042",
+    "tactic_name": "Resource Development",
+    "technique_id": "t1588.005",
+    "technique_name": "Exploits",
+    "reports": [
+      "CSIR-23014"
+    ],
+    "observables": [
+      "Members of FROZEN SPIDER have been observed deploying exploits"
+    ]
+  },
+  {
+    "id": "ta0043_t1589",
+    "tactic_id": "ta0043",
+    "tactic_name": "Reconnaissance",
+    "technique_id": "t1589",
+    "technique_name": "Gather Victim Identity Information",
+    "reports": [
+      "CSIR-23014"
+    ]
+  },
+  {
+    "id": "ta0043_t1589.001",
+    "tactic_id": "ta0043",
+    "tactic_name": "Reconnaissance",
+    "technique_id": "t1589.001",
+    "technique_name": "Credentials",
+    "reports": [
+      "CSIR-23014"
+    ],
+    "observables": [
+      "Access broker members of the team gather credentials for use in operations"
+    ]
+  },
+  {
+    "id": "ta0043_t1595",
+    "tactic_id": "ta0043",
+    "tactic_name": "Reconnaissance",
+    "technique_id": "t1595",
+    "technique_name": "Active Scanning",
+    "reports": [
+      "CSIR-23014"
+    ],
+    "observables": [
+      "The adversary is known to target vulnerabilities for exploitation, almost certainly scanning for these during targeting"
+    ]
+  },
+  {
+    "id": "ta0043_t1595.002",
+    "tactic_id": "ta0043",
+    "tactic_name": "Reconnaissance",
+    "technique_id": "t1595.002",
+    "technique_name": "Vulnerability Scanning",
+    "reports": [
+      "CSIR-23014"
+    ]
+  }
+]
+
