@@ -1,10 +1,16 @@
-from falconpy import Hosts, APIHarnessV2
+from falconpy import APIHarnessV2
 import os
 import json
 import pyfiglet
 from tabulate import tabulate
 
 
+"""Return API Handler Object"""
+def api_init():
+    CLIENT_ID = os.environ["FALCON_CLIENT_ID"]
+    CLIENT_SECRET = os.environ["FALCON_CLIENT_SECRET"]
+    falcon = APIHarnessV2(client_id=CLIENT_ID, client_secret=CLIENT_SECRET)
+    return falcon
 
 """Actor generation class"""
 class Actor:
@@ -105,13 +111,6 @@ def generate_actor_profile(query):
             actor.set_threats(threat_dict['family_name'])
     return actor
 
-"""Return API Handler Object"""
-def api_init():
-    CLIENT_ID = os.environ["FALCON_CLIENT_ID"]
-    CLIENT_SECRET = os.environ["FALCON_CLIENT_SECRET"]
-    falcon = APIHarnessV2(client_id=CLIENT_ID, client_secret=CLIENT_SECRET)
-    return falcon
-
 """Finds keys in nested dictionaries"""
 def iterate_lod(resources, key_search):
     found_values = []
@@ -172,11 +171,8 @@ def find_relevance(filter,falcon):
 def begin_query(falcon):
     query= input("Which threat actor would you like to query? ")
     query = find_relevance(query,falcon)
-    #Generate new Actor
     actor = generate_actor_profile(query)
-    #generate threat info
     generate_threat_info(actor)
-    #send to print method
     print_actor_info(actor)
 
 
