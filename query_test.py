@@ -176,7 +176,6 @@ def begin_query(falcon):
     query = find_relevance(query,falcon)
     actor = generate_actor_profile(query)
     generate_threat_info(actor)
-    #generate_recon_info(actor)
     print_actor_info(actor)
 
 
