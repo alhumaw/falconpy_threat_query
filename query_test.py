@@ -172,6 +172,7 @@ def find_relevance(filter,falcon):
         return filter
 
 def begin_query(falcon):
+    """Main Function"""
     query= input("Which threat would you like to query? ")
     query = find_relevance(query,falcon)
     actor = generate_actor_profile(query)
